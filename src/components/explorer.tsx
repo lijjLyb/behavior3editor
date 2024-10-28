@@ -282,6 +282,7 @@ export const Explorer: FC = () => {
     workdir: useWorkspace((state) => state.workdir),
     onEditingNodeDef: useWorkspace((state) => state.onEditingNodeDef),
     open: useWorkspace((state) => state.open),
+    getTypeDef: useWorkspace((state) => state.getTypeDef),
   };
   const { t } = useTranslation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -321,6 +322,8 @@ export const Explorer: FC = () => {
     };
     workspace.nodeDefs.forEach((nodeDef) => {
       let catalog = data.children?.find((nt) => nt.title === nodeDef.type);
+      let typeDef = workspace.getTypeDef(nodeDef.type);
+
       if (!catalog) {
         const type = getNodeType(nodeDef);
         catalog = {
@@ -344,20 +347,21 @@ export const Explorer: FC = () => {
         isLeaf: true,
         def: nodeDef,
         path: `${nodeDef.name}`,
-        icon: nodeDef.icon ? (
-          <Flex justify="center" align="center" style={{ height: "100%" }}>
-            <img
-              className="b3-node-icon"
-              key={catalog.title}
-              style={{ width: "13px", height: "13px", color: "white" }}
-              src={`file:///${workspace.workdir}/${nodeDef.icon}`}
-            />
-          </Flex>
-        ) : (
-          <Flex justify="center" align="center" style={{ height: "100%" }}>
-            <BsBoxFill style={{ width: "12px", height: "12px", color: "white" }} />{" "}
-          </Flex>
-        ),
+        icon: nodeDef.icon || typeDef?.icon
+          ? (
+            <Flex justify="center" align="center" style={{ height: "100%" }}>
+              <img
+                className="b3-node-icon"
+                key={catalog.title}
+                style={{ width: "13px", height: "13px", color: "white" }}
+                src={`file:///${workspace.workdir}/${nodeDef.icon || typeDef?.icon}`}
+              />
+            </Flex>
+          ) : (
+            <Flex justify="center" align="center" style={{ height: "100%" }} >
+              <BsBoxFill style={{ width: "12px", height: "12px", color: "white" }} />{" "}
+            </Flex >
+          ),
       });
     });
     data.children?.sort((a, b) => a.title.localeCompare(b.title));
@@ -875,12 +879,12 @@ export const Explorer: FC = () => {
                 newName !== null
                   ? false
                   : {
-                      icon: false,
-                      nodeDraggable: (node) => {
-                        const fileNode = node as unknown as FileTreeType;
-                        return !!fileNode.children || b3util.isTreeFile(fileNode.path);
-                      },
-                    }
+                    icon: false,
+                    nodeDraggable: (node) => {
+                      const fileNode = node as unknown as FileTreeType;
+                      return !!fileNode.children || b3util.isTreeFile(fileNode.path);
+                    },
+                  }
               }
               switcherIcon={<DownOutlined />}
             />

@@ -106,6 +106,12 @@ export type FileMeta = {
   exists?: boolean;
 };
 
+export type TypeDef = {
+  name: string
+  icon?: string
+  color?: string
+}
+
 interface WorkspaceModel {
   files?: { path: string; desc: string }[];
 }
@@ -145,6 +151,7 @@ export type WorkspaceStore = {
   watch(): void;
   loadTrees: () => void;
   loadNodeDefs: () => void;
+  loadTypeDefs: () => void;
 
   // edit node
   editingNode?: EditNode | null;
@@ -162,6 +169,11 @@ export type WorkspaceStore = {
   nodeDefs: Map<string, NodeDef>;
   getNodeDef: (name: string) => NodeDef;
   hasNodeDef: (name: string) => boolean;
+
+  // type config
+  typeDefs: Map<string, TypeDef>;
+  getTypeDef: (type: string) => TypeDef;
+  hasTypeDef: (type: string) => boolean;
 };
 
 const loadFileTree = (workdir: string, filename: string) => {
@@ -222,6 +234,7 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
         workspace.loadWorkspace();
         workspace.loadTrees();
         workspace.loadNodeDefs();
+        workspace.loadTypeDefs();
         workspace.watch();
         useSetting.getState().appendRecent(path);
       } catch (error) {
@@ -465,7 +478,7 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
     saveFile(workspace.editing);
   },
 
-  saveAs: () => {},
+  saveAs: () => { },
 
   saveAll: () => {
     const workspace = get();
@@ -488,8 +501,9 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
             hasEvent = true;
           }
         }
-        if (event === "change" && filename === "node-config.b3-setting") {
-          workspace.loadNodeDefs();
+        if (event === "change") {
+          if (filename === "node-config.b3-setting") workspace.loadNodeDefs();
+          if (filename === "type-config.b3-setting") workspace.loadTypeDefs();
         }
       });
     } catch (e) {
@@ -553,6 +567,17 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
     workspace.editing?.dispatch("reload");
   },
 
+  loadTypeDefs: () => {
+    const workspace = get();
+    const typeDefData = readJson(`${workspace.workdir}/type-config.b3-setting`) as TypeDef[];
+    const typeDefs: Map<string, TypeDef> = new Map();
+    for (const v of typeDefData) {
+      typeDefs.set(v.name, v);
+    }
+    set({ typeDefs });
+    workspace.editing?.dispatch("reload");
+  },
+
   // node edit
   onEditingNode: (node) => {
     const workspace = get();
@@ -600,5 +625,17 @@ export const useWorkspace = create<WorkspaceStore>((set, get) => ({
   hasNodeDef: (name) => {
     const workspace = get();
     return workspace.nodeDefs.has(name);
+  },
+
+  // type def
+  typeDefs: new Map(),
+  getTypeDef: (type) => {
+    const workspace = get();
+    unknownNodeDef.desc = i18n.t("node.unknown.desc");
+    return workspace.typeDefs.get(type) || unknownNodeDef;
+  },
+  hasTypeDef: (type) => {
+    const workspace = get();
+    return workspace.typeDefs.has(type);
   },
 }));

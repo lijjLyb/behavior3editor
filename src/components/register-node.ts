@@ -59,8 +59,9 @@ G6.registerNode(
     draw(cfg, group) {
       const workspace = useWorkspace.getState();
       const nodeDef = workspace.getNodeDef(cfg.name as string);
+      const typeDef = workspace.getTypeDef(nodeDef.type as string)
       let classify = getNodeType(nodeDef);
-      let color = nodeDef.color || NODE_COLORS[classify] || NODE_COLORS["Other"];
+      let color = nodeDef.color || typeDef?.color || NODE_COLORS[classify] || NODE_COLORS["Other"];
       if (
         !workspace.hasNodeDef(cfg.name as string) ||
         (cfg.path && (!cfg.children || (cfg.children as []).length === 0)) ||
@@ -175,8 +176,8 @@ G6.registerNode(
 
       // icon
       const img = nodeDef.icon
-        ? `file:///${workspace.workdir}/${nodeDef.icon}`
-        : `./icons/${classify}.svg`;
+        ? `file:///${workspace.workdir}/${nodeDef.icon}` : typeDef?.icon
+          ? `file:///${workspace.workdir}/${typeDef.icon}` : `./icons/${classify}.svg`;
       addShape("image", {
         attrs: {
           x: 5,
@@ -206,7 +207,7 @@ G6.registerNode(
         attrs: {
           textBaseline: "top",
           x: 26,
-          y: 5,
+          y: 6.5,
           fontWeight: 800,
           text: cfg.name,
           fill: textColor,
