@@ -335,7 +335,7 @@ export const Explorer: FC = () => {
               <img
                 className="b3-node-icon"
                 style={{ width: "13px", height: "13px", color: "white" }}
-                src={`./icons/${type}.svg`}
+                src={`file:///${workspace.workdir}/${typeDef?.icon}`}
               />
             </Flex>
           ),
@@ -343,7 +343,7 @@ export const Explorer: FC = () => {
         data.children?.push(catalog);
       }
       catalog.children?.push({
-        title: `${nodeDef.name}(${nodeDef.desc})`,
+        title: `${nodeDef.name}`,
         isLeaf: true,
         def: nodeDef,
         path: `${nodeDef.name}`,

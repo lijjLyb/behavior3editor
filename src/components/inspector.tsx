@@ -663,6 +663,7 @@ const NodeInspector: FC = () => {
                       name={`args.${arg.name}`}
                       key={`args.${arg.name}`}
                       label={arg.desc}
+                      tooltip={arg.tip || null}
                       initialValue={type === "boolean" ? arg.default ?? false : arg.default}
                       valuePropName={type === "boolean" ? "checked" : undefined}
                       rules={[
@@ -908,7 +909,7 @@ const NodeDefInspector: FC = () => {
           form={form}
           wrapperCol={{ span: "auto" }}
           labelCol={{ span: "auto" }}
-          // onFinish={finish}
+        // onFinish={finish}
         >
           <Form.Item name="name" label={t("node.name")}>
             <Input disabled={true} />
@@ -954,6 +955,7 @@ const NodeDefInspector: FC = () => {
                   <Form.Item
                     name={`args.${i}.type`}
                     label={v.desc}
+                    tooltip={v.tip || null}
                     key={`args.${i}.type`}
                     rules={[{ required }]}
                   >

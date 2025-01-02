@@ -276,7 +276,7 @@ export const Workspace: FC = () => {
                   style={{ fontSize: "40px", fontWeight: "600", marginBottom: "10px" }}
                 >
                   <PiTreeStructureFill size="50px" />
-                  <div>Behavior3 Editor</div>
+                  <div>YunDou Behavior Editor</div>
                 </Flex>
                 <Flex vertical style={{ paddingLeft: "55px", paddingBottom: "15px" }}>
                   <div style={{ fontSize: "22px", fontWeight: "500" }}>{t("start")}</div>

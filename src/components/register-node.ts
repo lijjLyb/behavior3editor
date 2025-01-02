@@ -244,12 +244,13 @@ G6.registerNode(
       }
 
       const x = 6;
-      let y = 32;
+      let y = 12;
       // desc text
       let desc = (cfg.desc || nodeDef.desc) as string;
       if (desc) {
         desc = i18n.t("regnode.mark") + desc;
         desc = cutWordTo(desc, w - 15);
+        y += 20;
         addShape("text", {
           attrs: {
             textBaseline: "top",

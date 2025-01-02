@@ -2,8 +2,8 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  appId: "behavior3editor",
-  productName: "Behavior3 Editor",
+  appId: "yundoubehavioreditor",
+  productName: "YunDou Behavior Editor",
   asar: true,
   directories: {
     output: "release/${version}",
